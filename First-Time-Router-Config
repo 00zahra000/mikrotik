@@ -47,13 +47,44 @@ DHCP client will receive information from an internet service provider (ISP) and
 ## Static Public IP
 In the case of static address configuration, your ISP gives you parameters, for example:
 
-    IP: 1.2.4.0
-    Gateway: 1.2.3.1
+    IP: 1.2.4.100
+    Gateway: 1.2.4.100
     DNS: 8.8.8.8
 
 These are three basic parameters that you need to get the internet connection working
 
 To set this in RouterOS we will manually add an IP address, add a default route with a provided gateway, and set up a DNS server
-/ip address add address=1.2.3.100/24 interface=ether1
-/ip route add gateway=1.2.3.1
+/ip address add address=1.2.4.100 interface=ether1
+/ip route add gateway=1.2.4.1
 /ip dns set servers=8.8.8.8
+
+/ping 192.168.4.6
+/ping 8.8.8.8
+/ping google.com
+
+
+## MAC Connectivity Access
+
+By default mac server runs on all interfaces, so we will disable default all entry and add a local interface to disallow MAC connectivity from the WAN port.
+MAC Telnet Server feature allows you to apply restrictions to the interface "list".
+
+    First, create an interface list:
+        [admin@MikroTik] > /interface list add name=listBridge
+
+    Then, add your previously created bridge named "local" to the interface list:
+        [admin@MikroTik] > tool mac-server set allowed-interface-list=listBridge
+
+    Apply newly created "list" (of interfaces) to the MAC server:
+        [admin@MikroTik] > /interface list member add list=listBridge interface=local
+        
+    Do the same for Winbox MAC access
+        [admin@MikroTik] > tool mac-server mac-winbox set allowed-interface-list=listBridge
+        
+## Neighbor Discovery
+MikroTik Neighbor discovery protocol is used to show and recognize other MikroTik routers in the network. (Disable neighbor discovery on public interfaces)
+
+/ip neighbor discovery-settings set discover-interface-list=listBridge
+
+
+
+MORE: https://help.mikrotik.com/docs/display/ROS/First+Time+Configuration
