@@ -1,0 +1,18 @@
+# To set 159.148.60.2 as the primary DNS server and allow the router to be used as a DNS server, do the following: 
+
+[admin@MikroTik] ip dns> set servers=159.148.60.2 \
+\... allow-remote-requests=yes
+[admin@MikroTik] ip dns> print
+                servers: 159.148.60.2
+  allow-remote-requests: yes
+             cache-size: 2048KiB
+          cache-max-ttl: 1w
+             cache-used: 7KiB
+[admin@MikroTik] ip dns>
+
+
+#This menu provides a list with all address (DNS type "A") records stored on the server :
+/ip dns cache
+
+#This menu provides a complete list with all DNS records stored on the server 
+/ip dns cache all
