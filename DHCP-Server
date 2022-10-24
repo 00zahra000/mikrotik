@@ -1,0 +1,24 @@
+#RouterOS has a built in command that lets you easily set up a DHCP server.
+#Let's say we want to configure DHCP server on ether1 interface to lease addresses from 192.168.0.2 to 192.168.0.254 which belong to the 192.168.0.0/24 network. 
+#The gateway and DNS server is 192.168.0.1. 
+
+[admin@MikroTik] ip dhcp-server> setup
+Select interface to run DHCP server on
+
+dhcp server interface: ether1
+Select network for DHCP addresses
+
+dhcp address space: 192.168.0.0/24
+Select gateway for given network
+
+gateway for dhcp network: 192.168.0.1
+Select pool of ip addresses given out by DHCP server
+
+addresses to give out: 192.168.0.2-192.168.0.254
+Select DNS servers
+
+dns servers: 192.168.0.1
+Select lease time
+
+lease time: 3d
+[admin@MikroTik] ip dhcp-server>print
