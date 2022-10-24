@@ -1,0 +1,59 @@
+## To reset all former congfigs or reset everything on a mikrotik:
+/system reset-configuration no-defaults=yes skip-backup=yes
+
+
+## Configuring IP Access:
+Since MAC connection is not very stable, the first thing we need to do is to set up a router so that IP connectivity is available:
+
+    add bridge interface and bridge ports;
+    add an IP address to LAN interface;
+    set up a DHCP server.
+
+/interface bridge add name=local
+/interface bridge port add interface=ether1 bridge=local
+/ip address add address=192.168.4.6 interface=local
+
+## The next step is to set up a DHCP server. We will run the setup command for easy and fast configuration:
+
+[admin@MikroTik] /ip dhcp-server setup 
+Select interface to run DHCP server on
+ 
+dhcp server interface: local 
+Select network for DHCP addresses
+ 
+dhcp address space: 192.168.4.0 
+Select gateway for given network
+ 
+gateway for dhcp network: 192.168.4.1 (192.168.4.2)
+Select pool of ip addresses given out by DHCP server
+ 
+addresses to give out: 192.168.4.2-192.168.4.254
+Select DNS servers
+
+dns servers: 192.168.4.1 
+Select lease time
+ 
+lease time: 3d (10m for the default)
+
+
+## Dynamic Public IP
+Dynamic address configuration is the simplest one.
+You just need to set up a DHCP client on the public interface.
+DHCP client will receive information from an internet service provider (ISP) and set up an IP address, DNS, NTP servers, and default route for you.
+
+[admin@MikroTik] /ip dhcp-client add disabled=no interface=ether1
+[admin@MikroTik] /ip dhcp-client> print
+
+## Static Public IP
+In the case of static address configuration, your ISP gives you parameters, for example:
+
+    IP: 1.2.4.0
+    Gateway: 1.2.3.1
+    DNS: 8.8.8.8
+
+These are three basic parameters that you need to get the internet connection working
+
+To set this in RouterOS we will manually add an IP address, add a default route with a provided gateway, and set up a DNS server
+/ip address add address=1.2.3.100/24 interface=ether1
+/ip route add gateway=1.2.3.1
+/ip dns set servers=8.8.8.8
